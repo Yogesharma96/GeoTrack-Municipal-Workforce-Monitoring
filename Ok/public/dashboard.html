@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoTrack - Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body class="dashboard-body">
+  <div class="desi-pattern-overlay"></div>
+  
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar glass-card">
+      <div class="sidebar-header">
+        <h2 class="desi-title small">GeoTrack</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li class="active" data-view="dashboard"><i class="ph ph-squares-four"></i> City Operations Desk</li>
+          <li data-view="attendance"><i class="ph ph-users-three"></i> Field Staff Attendance <span class="badge">SLA</span></li>
+          <li data-view="tasks"><i class="ph ph-clipboard-text"></i> City Interventions</li>
+          <li data-view="workers"><i class="ph ph-hard-hat"></i> Workforce Directory</li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="logoutBtn" class="btn text-btn text-danger" style="width: 100%; text-align: left; margin-top: 5px;"><i class="ph ph-sign-out"></i> Logout</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-header glass-card">
+        <div class="header-left">
+          <h2 id="pageTitle" style="font-family: 'Playfair Display', serif; color: var(--primary-saffron);">City Operations Desk</h2>
+        </div>
+        <div class="header-right" style="display: flex; align-items: center; gap: 1rem;">
+          <button id="themeToggleBtn" class="btn text-btn" style="font-size: 1.6rem; padding: 0.4rem; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;" title="Toggle Theme">
+            <i class="ph ph-moon"></i>
+          </button>
+          <div class="user-profile">
+            <div class="avatar">A</div>
+            <span id="userNameDisplay">Admin Portal</span>
+          </div>
+        </div>
+      </header>
+      
+      <!-- Views Container -->
+      <div class="views-container">
+        
+        <!-- Dashboard View -->
+        <div id="view-dashboard" class="view active-view">
+          <div class="stats-grid">
+            <div class="stat-card glass-card">
+              <h3>Active Workforce</h3>
+              <p class="stat-value" id="statWorkers">...</p>
+              <div class="stat-subtitle text-success">Present Today: <span id="statPresent">...</span></div>
+            </div>
+            <div class="stat-card glass-card">
+              <h3>Pending Tasks</h3>
+              <p class="stat-value" id="statPending">...</p>
+              <div class="stat-subtitle">Resource optimization needed</div>
+            </div>
+            <div class="stat-card glass-card">
+              <h3>Completed Works</h3>
+              <p class="stat-value" id="statCompleted">...</p>
+              <div class="stat-subtitle text-success">SLA Met</div>
+            </div>
+          </div>
+
+          <div class="map-section glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3>Metropolitan Grid - Live Tracking</h3>
+            </div>
+            <div id="map" class="map-container"></div>
+          </div>
+        </div>
+
+        <!-- Attendance View -->
+        <div id="view-attendance" class="view">
+          <div class="glass-card panel">
+            <h3>Geofenced Attendance Logs</h3>
+            <div class="table-responsive">
+              <table class="desi-table">
+                <thead>
+                  <tr>
+                    <th>Worker</th>
+                    <th>Zone</th>
+                    <th>Check In Time</th>
+                    <th>Location Status</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="attendanceTableBody">
+                  <!-- Data populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tasks View -->
+        <div id="view-tasks" class="view">
+          <div class="glass-card panel">
+             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+               <h3>Municipal Tasks Management</h3>
+               <button id="openTaskModalBtn" class="btn primary-btn" style="padding: 0.5rem 1rem; font-size: 0.8rem;">+ Assign Task</button>
+             </div>
+            <div class="table-responsive">
+              <table class="desi-table">
+                <thead>
+                  <tr>
+                    <th>Task Title</th>
+                    <th>Assigned To</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tasksTableBody">
+                  <!-- Data populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Workers View -->
+        <div id="view-workers" class="view">
+          <div class="glass-card panel">
+             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+               <h3>Workforce Directory</h3>
+               <button id="openWorkerModalBtn" class="btn primary-btn" style="padding: 0.5rem 1rem; font-size: 0.8rem;">+ Add Worker</button>
+             </div>
+            <div class="table-responsive">
+              <table class="desi-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Zone</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="workersTableBody">
+                  <!-- Data populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Assign Task Modal -->
+  <div id="taskModal" class="modal-overlay hide">
+    <div class="modal-content glass-card" style="max-width: 700px; width: 95%; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h3>Assign New Task</h3>
+        <button id="closeModalBtn" class="text-btn">&times;</button>
+      </div>
+      <form id="assignTaskForm" class="modal-form">
+        <div class="input-group">
+          <label>Task Title</label>
+          <input type="text" id="newTaskTitle" placeholder="e.g. Park Cleaning" required>
+        </div>
+        <div class="input-group">
+          <label>Assign To (Worker)</label>
+          <select id="newTaskWorker" class="desi-select" required>
+            <option value="Ramesh Kumar">Ramesh Kumar</option>
+            <option value="Suresh Singh">Suresh Singh</option>
+            <option value="Amit Patel">Amit Patel</option>
+            <option value="Priya Sharma">Priya Sharma</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Location / Address</label>
+          <input type="text" id="newTaskLoc" placeholder="e.g. Shivaji Sector-4" required>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <div class="input-group" style="flex: 1;">
+            <label>Target Latitude</label>
+            <input type="number" step="any" id="newTaskLat" placeholder="15.9020" required>
+          </div>
+          <div class="input-group" style="flex: 1;">
+            <label>Target Longitude</label>
+            <input type="number" step="any" id="newTaskLng" placeholder="73.8180" required>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; font-size: 0.85rem;">
+           <div style="display: flex; gap: 1rem; align-items: center;">
+             <button type="button" class="btn text-btn" id="autoFetchCoordsBtn" style="padding:0; flex-shrink: 0;"><i class="ph ph-map-pin"></i> Auto-fetch from Address</button>
+             <button type="button" class="btn text-btn" id="modalMapSearchBtn" style="padding:0; color: var(--primary-saffron); flex-shrink: 0;"><i class="ph ph-magnifying-glass"></i> Deep Search</button>
+           </div>
+           <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 0.5rem;">
+             <span style="color: var(--text-muted);">Or drop a pin manually on the map below:</span>
+             <button type="button" class="btn text-btn" id="expandModalMapBtn" style="padding:0; color: var(--primary-saffron);"><i class="ph ph-arrows-out"></i> Expand Map</button>
+           </div>
+        </div>
+        <div id="modalMap" style="height: 180px; width: 100%; border-radius: 8px; margin-bottom: 1rem; z-index: 1; border: 1px solid var(--border-color); transition: height 0.3s ease;"></div>
+        <button type="submit" class="btn primary-btn" style="width: 100%;">Assign Task</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Worker Modal -->
+  <div id="editWorkerModal" class="modal-overlay hide">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h3>Edit Worker Details</h3>
+        <button id="closeEditWorkerModalBtn" class="text-btn" style="font-size: 1.5rem;">&times;</button>
+      </div>
+      <form id="editWorkerForm" class="modal-form">
+        <div class="input-group">
+          <label>Full Name</label>
+          <input type="text" id="editWorkerName" required>
+        </div>
+        <div class="input-group">
+          <label>Phone Number</label>
+          <input type="tel" id="editWorkerPhone" required>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <div class="input-group" style="flex: 1;">
+            <label>Role</label>
+            <select id="editWorkerRole" class="desi-select" required>
+              <option value="Worker">Worker</option>
+              <option value="Supervisor">Supervisor</option>
+            </select>
+          </div>
+          <div class="input-group" style="flex: 1;">
+            <label>Assigned Zone</label>
+            <input type="text" id="editWorkerZone" required>
+          </div>
+        </div>
+        <button type="submit" class="btn primary-btn" style="width: 100%; margin-top: 1rem;"><i class="ph ph-floppy-disk"></i> Save Edited Worker</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Task Modal -->
+  <div id="editTaskModal" class="modal-overlay hide">
+    <div class="modal-content glass-card" style="max-width: 700px; width: 95%; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h3>Edit Assigned Task</h3>
+        <button id="closeEditTaskModalBtn" class="text-btn" style="font-size: 1.5rem;">&times;</button>
+      </div>
+      <form id="editTaskForm" class="modal-form">
+        <div class="input-group">
+          <label>Task Title</label>
+          <input type="text" id="editTaskTitle" required>
+        </div>
+        <div class="input-group">
+          <label>Assign To (Worker)</label>
+          <select id="editTaskWorker" class="desi-select" required>
+            <!-- Options dynamically populated or preserved -->
+            <option value="Ramesh Kumar">Ramesh Kumar</option>
+            <option value="Suresh Singh">Suresh Singh</option>
+            <option value="Amit Patel">Amit Patel</option>
+            <option value="Priya Sharma">Priya Sharma</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Location / Address</label>
+          <input type="text" id="editTaskLoc" required>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <div class="input-group" style="flex: 1;">
+            <label>Target Latitude</label>
+            <input type="number" step="any" id="editTaskLat" placeholder="15.9020" required>
+          </div>
+          <div class="input-group" style="flex: 1;">
+            <label>Target Longitude</label>
+            <input type="number" step="any" id="editTaskLng" placeholder="73.8180" required>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; font-size: 0.85rem;">
+           <div style="display: flex; gap: 1rem; align-items: center;">
+             <button type="button" class="btn text-btn" id="editAutoFetchCoordsBtn" style="padding:0; flex-shrink: 0;"><i class="ph ph-map-pin"></i> Auto-fetch from Address</button>
+             <button type="button" class="btn text-btn" id="editModalMapSearchBtn" style="padding:0; color: var(--primary-saffron); flex-shrink: 0;"><i class="ph ph-magnifying-glass"></i> Deep Search</button>
+           </div>
+           <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 0.5rem;">
+             <span style="color: var(--text-muted);">Or drop a pin manually on the map below:</span>
+             <button type="button" class="btn text-btn" id="expandEditModalMapBtn" style="padding:0; color: var(--primary-saffron);"><i class="ph ph-arrows-out"></i> Expand Map</button>
+           </div>
+        </div>
+        <div id="editModalMap" style="height: 180px; width: 100%; border-radius: 8px; margin-bottom: 1rem; z-index: 1; border: 1px solid var(--border-color); transition: height 0.3s ease;"></div>
+
+        <button type="submit" class="btn primary-btn" style="width: 100%; margin-top: 1rem;"><i class="ph ph-floppy-disk"></i> Save Edited Task</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Worker Modal -->
+  <div id="workerModal" class="modal-overlay hide">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h3>Onboard New Field Staff</h3>
+        <button id="closeWorkerModalBtn" class="text-btn" style="font-size: 1.5rem;">&times;</button>
+      </div>
+      <form id="addWorkerForm" class="modal-form">
+        <div class="input-group">
+          <label>Full Name</label>
+          <input type="text" id="newWorkerName" placeholder="e.g. Anil Verma" required>
+        </div>
+        <div class="input-group">
+          <label>Phone Number</label>
+          <input type="tel" id="newWorkerPhone" placeholder="e.g. 9876543210" value="+91 " required>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <div class="input-group" style="flex: 1;">
+            <label>Role</label>
+            <select id="newWorkerRole" class="desi-select" required>
+              <option value="Worker">Worker</option>
+              <option value="Supervisor">Supervisor</option>
+            </select>
+          </div>
+          <div class="input-group" style="flex: 1;">
+            <label>Assigned Zone</label>
+            <input type="text" id="newWorkerZone" placeholder="e.g. Zone D" required>
+          </div>
+        </div>
+        <button type="submit" class="btn primary-btn" style="width: 100%; margin-top: 1rem;">Register Staff</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
