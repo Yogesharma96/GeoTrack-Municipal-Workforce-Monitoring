@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Backgrounds -->
+    <color name="bg_primary">#0D1117</color> <!-- GitHub dark background -->
+    <color name="bg_secondary">#161B22</color>
+
+    <!-- UI Elements -->
+    <color name="primary_color">#2F81F7</color> <!-- Nice modern blue -->
+    <color name="primary_variant">#1F6FEB</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#E6EDF3</color>
+    <color name="text_secondary">#848D97</color>
+    
+    <!-- Form Elements -->
+    <color name="input_bg">#010409</color>
+    <color name="input_border">#30363D</color>
+    <color name="error_color">#F85149</color>
+    <color name="success_color">#238636</color>
+</resources>

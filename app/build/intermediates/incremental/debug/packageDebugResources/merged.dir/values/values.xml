@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_primary">#0D1117</color>
+    <color name="bg_secondary">#161B22</color>
+    <color name="error_color">#F85149</color>
+    <color name="input_bg">#010409</color>
+    <color name="input_border">#30363D</color>
+    <color name="primary_color">#2F81F7</color>
+    <color name="primary_variant">#1F6FEB</color>
+    <color name="success_color">#238636</color>
+    <color name="text_primary">#E6EDF3</color>
+    <color name="text_secondary">#848D97</color>
+    <string name="app_name">Smart Municipal App</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="dashboard_welcome">Welcome User!</string>
+    <string name="error_empty_fields">Please fill all fields</string>
+    <string name="error_invalid_credentials">Invalid username or password</string>
+    <string name="login_btn">Login</string>
+    <string name="mobile_hint">Mobile Number</string>
+    <string name="otp_hint">OTP</string>
+    <string name="password_hint">Password</string>
+    <string name="register_btn">Register</string>
+    <string name="success_register">Registration Successful</string>
+    <string name="username_hint">Username</string>
+    <string name="welcome_message">Welcome to Smart Municipal App!</string>
+    <style name="Theme.SmartMunicipalApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorOnPrimary">@color/text_primary</item>
+        
+        
+        <item name="android:windowBackground">@color/bg_primary</item>
+        <item name="colorSurface">@color/bg_secondary</item>
+        
+        
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_secondary</item>
+        
+        
+        <item name="colorError">@color/error_color</item>
+    </style>
+</resources>
