@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Smart Municipal App</string>
+    <string name="welcome_message">Welcome to Smart Municipal App!</string>
+    <string name="login_btn">Login</string>
+    <string name="register_btn">Register</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="mobile_hint">Mobile Number</string>
+    <string name="otp_hint">OTP</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="dashboard_welcome">Welcome User!</string>
+    <string name="error_empty_fields">Please fill all fields</string>
+    <string name="error_invalid_credentials">Invalid username or password</string>
+    <string name="success_register">Registration Successful</string>
+</resources>
